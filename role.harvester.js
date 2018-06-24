@@ -31,11 +31,6 @@ var roleHarvester = {
     	        if(isBuilding) {
                     break;
                 }
-	        case Tasks.UPGRADE:
-    	        var isBuilding = protocols.build(creep);
-    	        if(isBuilding) {
-                    break;
-                }
 	        default:
 	            creep.say('⛔ idle');
                 var target = creep.room.getPositionAt(30, 25);

@@ -6,8 +6,21 @@ function protocolModule() {
         if(!creep.memory.isSourceSeleted) {
             console.log('finding harvest source for ' + creep.name);
             // todo max 4 an eine source
-            var source = creep.pos.findClosestByRange(FIND_SOURCES);
-            //console.log('choosing source at ' + source.pos);
+            var sources = creep.room.find(FIND_SOURCES);
+            var source;
+            for (var index in sources) {
+                var srcId = sources[index].id;
+                var count = _.filter(Game.creeps, (creep) => creep.memory.sourceId == srcId).length;
+                if (count < 4) {
+                    source = sources[index];
+                    break;
+                }
+            }
+            if(!source) {
+                source = sources[0];
+            }
+            
+            console.log('choosing source at ' + source.pos);
             creep.memory.sourceId = source.id;
             creep.memory.isSourceSeleted = true;
         }
@@ -46,10 +59,10 @@ function protocolModule() {
     
     /** @param {Creep} creep **/
     this.build = function(creep){
-        var buildSites = creep.room.find(FIND_CONSTRUCTION_SITES,
-        {
-            filter: (structure) => { return structure.structureType != STRUCTURE_ROAD; }
-        });
+        var buildSites = creep.room.find(FIND_CONSTRUCTION_SITES);
+        //{
+        //    filter: (structure) => { return structure.structureType != STRUCTURE_ROAD; }
+        //});
         if(buildSites.length) {
             if(creep.build(buildSites[0]) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(buildSites[0], {visualizePathStyle: {stroke: '#ffffff'}});
@@ -63,7 +76,7 @@ function protocolModule() {
         
     /** @param {Creep} creep **/
     this.upgrade = function(creep){
-        var resp = creep.upgradeController(creep.room.controller)
+        var resp = creep.upgradeController(creep.room.controller);
         if (resp == ERR_NOT_IN_RANGE) {
             creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffffff'}});
         } else if (resp != OK) {

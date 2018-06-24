@@ -1,6 +1,8 @@
+var autospawnModule = require('util.autospawn');
+var autoSpawnUtil = new autospawnModule();
+
 var commandSpawn = {
 
-	
     /** @param {StructureSpawn} spawn **/
     run: function(spawn) {
 
@@ -25,24 +27,24 @@ var commandSpawn = {
 var autoSpawner = {
     /** @param {StructureSpawn} spawn **/
 	autoSpawn: function(spawn) {
-	    var wantedBuilders = 3;
-	    var wantedUpgraders = 2;
-	    var wantedHarvesters = 5;
-	    if(spawn.energy < 200) {
+	    var wantedBuilders = 4;
+	    var wantedUpgraders = 3;
+	    var wantedHarvesters = 6;
+	    var wantedDefenders = 4;
+
+	    if(spawn.room.energy < 200) {
             return;
 	    }
 	    
-        var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
         var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
-        var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
         if(builders.length < wantedBuilders) {
-            var newName = 'Builder' + Game.time;
-            console.log('Spawning new builder: ' + newName);
-            spawn.spawnCreep([WORK,CARRY,MOVE], newName, {memory: {role: 'builder'}});
-            //spawn.spawnCreep([WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE], newName, {memory: {role: 'builder'}});
+            if (autoSpawnUtil.builderHarvester(spawn, 'Builder') == OK) {
+                console.log('Spawning new builder');
+            }
             return;
         }
                 
+        var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
         if(upgraders.length < wantedUpgraders) {
             var newName = 'Upgrader' + Game.time;
             console.log('Spawning new upgrader: ' + newName);
@@ -51,14 +53,33 @@ var autoSpawner = {
             return;
         }
         
+        var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
         if(harvesters.length < wantedHarvesters) {
+            if (autoSpawnUtil.builderHarvester(spawn, 'Harvester') == OK) {
+                console.log('Spawning new Harvester');
+            }
+            /*
             var newName = 'Harvester' + Game.time;
             console.log('Spawning new harvester: ' + newName);
             spawn.spawnCreep([WORK,CARRY,MOVE], newName, {memory: {role: 'harvester'}});
             //spawn.spawnCreep([WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE], newName, {memory: {role: 'harvester'}});
             return;
+            */
         }
+        
+        //if(wantedDefenders)
 	}
 }
-    
+ /*
+     BODYPART_COST: {
+        "move": 50,
+        "work": 100,
+        "attack": 80,
+        "carry": 50,
+        "heal": 250,
+        "ranged_attack": 150,
+        "tough": 10,
+        "claim": 600
+    }
+ */   
 module.exports = commandSpawn;

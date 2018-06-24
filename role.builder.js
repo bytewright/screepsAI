@@ -9,9 +9,11 @@ var roleBuilder = {
     run: function(creep) {
         // find out what to do
 	    if (!creep.memory.task || creep.carry.energy == 0 && creep.memory.task != Tasks.HARVEST) {
+	        creep.memory.sourceId = null;
             creep.memory.task = Tasks.HARVEST;
             creep.say('🔄 harvest');
 	    } else if (creep.carry.energy == creep.carryCapacity && creep.memory.task != Tasks.BUILD) {
+	        creep.memory.sourceId = null;
             creep.memory.task = Tasks.BUILD;
 	        creep.say('🚧 build');
 	    }
@@ -31,6 +33,9 @@ var roleBuilder = {
     	        if(isRechargingStructure) {
                     break;
                 }
+	        case Tasks.UPGRADE:
+    	        protocols.upgrade(creep);
+	            break;
 	        default:
 	            creep.say('⛔ idle');
                 var target = creep.room.getPositionAt(30, 25);
