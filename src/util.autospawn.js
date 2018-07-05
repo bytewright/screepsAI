@@ -1,27 +1,31 @@
 
 function autoSpawnModule() {
 
-    /** @param {StructureSpawn} spawn **/
+    /**
+     * @param {StructureSpawn} spawn
+     * @param roleName
+     **/
     this.builderHarvester = function(spawn, roleName){
-        var newName = roleName + Game.time;
-        var maxEnergy = spawn.energyCapacityAvailable;
-        var bodyCost = 200;
-        var body;
-        if (maxEnergy <= 200) {
+        let newName = roleName + Game.time;
+        let maxEnergy = spawn.room.energyCapacityAvailable;
+        let bodyCost = 200;
+        let body;
+        if (maxEnergy <= 300) {
             body = [WORK,CARRY,MOVE];
         } else if (maxEnergy <= 400) {
             body = [WORK,WORK,CARRY,CARRY,MOVE,MOVE];
         } else if (maxEnergy <= 550) {
             body = [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE];
-        }  else if (maxEnergy <= 800) {
+        }  else {//if (maxEnergy <= 800) {
             body = [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE];
         }
+        console.log('with '+maxEnergy+' energy, creating body: '+body);
         /*
         body.push(WORK);
         body.push(CARRY);
         body.push(MOVE);
-        var buildFinished = false;
-        for (var i = 0; !buildFinished; i++) {
+        let buildFinished = false;
+        for (let i = 0; !buildFinished; i++) {
           if(maxEnergy < bodyCost + 100) {
               buildFinished = true;
               break;
@@ -34,28 +38,45 @@ function autoSpawnModule() {
             body.push(WORK);
             bodyCost += 100;
           }
-          
+
         }
         */
         return spawn.spawnCreep(body, newName, {memory: {role: roleName}});
-    }
-    
-    
+    };
+
+
     /** @param {StructureSpawn} spawn **/
     this.upgrader = function(spawn){
-        var newName = 'Upgrader' + Game.time;
+        let newName = 'Upgrader' + Game.time;
         console.log('Spawning new upgrader: ' + newName);
         return spawn.spawnCreep([WORK,CARRY,MOVE], newName, {memory: {role: 'upgrader'}});
+    };
+
+    /**
+     * @param {StructureSpawn} spawn
+     * @param roleName
+     */
+    this.defender = function(spawn, roleName){
+        let newName = roleName + Game.time;
+        console.log('Spawning new ' + newName);
+        let maxEnergy = spawn.room.energyCapacityAvailable;
+        let bodyCost = 200;
+        let body;
+        if (maxEnergy <= 400) {
+            body = [ATTACK,TOUGH,TOUGH,RANGED_ATTACK,MOVE,MOVE,MOVE];
+        } else if (maxEnergy <= 550) {
+            body = [ATTACK,ATTACK,ATTACK,TOUGH,RANGED_ATTACK,MOVE,MOVE,MOVE];
+        }  else if (maxEnergy <= 800) {
+            body = [ATTACK,ATTACK,ATTACK,TOUGH,RANGED_ATTACK,MOVE,MOVE,MOVE];
+        } else {
+            body = [ATTACK,TOUGH,TOUGH,MOVE,MOVE];
+        }
+        console.log('with ' + maxEnergy + ' energy, creating ' + roleName + ' body: ' + body);
+        return spawn.spawnCreep(body, newName, {memory: {role: roleName}});
     }
-    /** @param {StructureSpawn} spawn **/
-    this.harvester = function(spawn){
-        var newName = 'Harvester' + Game.time;
-        console.log('Spawning new harvester: ' + newName);
-        return spawn.spawnCreep([WORK,CARRY,MOVE], newName, {memory: {role: 'harvester'}});
-    }
-    
+
     /*
-     MOVE: "move",
+    MOVE: "move",
     WORK: "work",
     CARRY: "carry",
     ATTACK: "attack",
