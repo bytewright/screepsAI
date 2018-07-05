@@ -10,7 +10,7 @@ var commandSpawn = {
             return;
         }
         
-        autoSpawner.autoSpawn(spawn);          
+        autoSpawner.autoSpawn(spawn);
         
         if(spawn.spawning) { 
             var spawningCreep = Game.creeps[spawn.spawning.name];
@@ -44,7 +44,7 @@ var autoSpawner = {
             return;
         }
                 
-        var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
+        var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role === 'upgrader');
         if(upgraders.length < wantedUpgraders) {
             var newName = 'Upgrader' + Game.time;
             console.log('Spawning new upgrader: ' + newName);
@@ -53,7 +53,7 @@ var autoSpawner = {
             return;
         }
         
-        var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
+        var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role === 'harvester');
         if(harvesters.length < wantedHarvesters) {
             if (autoSpawnUtil.builderHarvester(spawn, 'Harvester') == OK) {
                 console.log('Spawning new Harvester');
